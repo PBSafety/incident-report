@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accident / Incident Reports</title>
+  <title>Accident / Incident Report</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
@@ -19,22 +19,30 @@
 </head>
 <body>
 
-<h1>Accident / Incident Report Form</h1>
+<h1 id="formTitle">Accident / Incident Report Form</h1>
+
+<!-- Language Selector -->
+<label for="languageSelect" id="langLabel">Language / Lang / Lang</label>
+<select id="languageSelect" onchange="cambiarIdioma()">
+  <option value="en">English</option>
+  <option value="es">Español</option>
+  <option value="ht">Kreyòl Ayisyen</option>
+</select>
 
 <form id="incidentForm">
-  <label>Employee Name</label>
+  <label id="employeeLabel">Employee Name</label>
   <input type="text" id="manager" required />
 
-  <label>Incident / Accident Type</label>
+  <label id="accidentTypeLabel">Incident / Accident Type</label>
   <select id="tipo" required>
     <option value="Incident">Incident</option>
     <option value="Accident">Accident</option>
   </select>
 
-  <label>Incident Date</label>
+  <label id="dateLabel">Incident Date</label>
   <input type="date" id="fecha" required />
 
-  <label>Department</label>
+  <label id="departmentLabel">Department</label>
   <select id="departamento" required>
     <option value="" disabled selected>Select department</option>
     <option value="Water dep">Water dep</option>
@@ -47,16 +55,13 @@
     <option value="Other">Other</option>
   </select>
 
-  <!-- NEW FIELDS INSERTED HERE -->
-
-  <label>Location</label>
+  <label id="locationLabel">Location</label>
   <input type="text" id="location" placeholder="Exact area where the event occurred" />
 
-  <label>Data of person(s) involved</label>
-  <textarea id="personas" rows="4"
-    placeholder="Full name, job title, department, supervisor's name, contact information"></textarea>
+  <label id="personsLabel">Data of person(s) involved</label>
+  <textarea id="personas" rows="4" placeholder="Full name, job title, department, supervisor's name, contact information"></textarea>
 
-  <label>Type of Event</label>
+  <label id="eventTypeLabel">Type of Event</label>
   <select id="tipoEvento" onchange="mostrarSpecify()">
     <option value="" disabled selected>Select one</option>
     <option value="near miss">Near Miss</option>
@@ -67,33 +72,101 @@
   </select>
 
   <div id="specifyBox" class="hidden">
-    <label>Specify</label>
+    <label id="specifyLabel">Specify</label>
     <input type="text" id="specify" />
   </div>
 
-  <!-- END OF INSERTED FIELDS -->
-
-  <label>Incident / Accident Description</label>
+  <label id="descriptionLabel">Incident / Accident Description</label>
   <textarea id="descripcion" rows="5" required></textarea>
 
-  <!-- WITNESS FIELD -->
-  <label>Data of Witness</label>
-  <textarea id="witness" rows="4"
-   placeholder="Full name, witness contact information, witness statement"></textarea>
+  <label id="witnessLabel">Data of Witness</label>
+  <textarea id="witness" rows="4" placeholder="Full name, witness contact information, witness statement"></textarea>
 
-  <label>Actions Taken</label>
+  <label id="actionsLabel">Actions Taken</label>
   <textarea id="acciones" rows="4"></textarea>
 
-  <button type="button" class="btn-primary" onclick="enviarEmail()">Send by Email</button>
-  <button type="button" class="btn-secondary" onclick="generarPDF()">Generate PDF</button>
+  <button type="button" class="btn-primary" onclick="enviarEmail()" id="sendBtn">Send by Email</button>
+  <button type="button" class="btn-secondary" onclick="generarPDF()" id="pdfBtn">Generate PDF</button>
 </form>
 
 <script>
+  const textos = {
+    en: {
+      formTitle: "Accident / Incident Report Form",
+      langLabel: "Language",
+      employeeLabel: "Employee Name",
+      accidentTypeLabel: "Incident / Accident Type",
+      dateLabel: "Incident Date",
+      departmentLabel: "Department",
+      locationLabel: "Location",
+      personsLabel: "Data of person(s) involved",
+      eventTypeLabel: "Type of Event",
+      specifyLabel: "Specify",
+      descriptionLabel: "Incident / Accident Description",
+      witnessLabel: "Data of Witness",
+      actionsLabel: "Actions Taken",
+      sendBtn: "Send by Email",
+      pdfBtn: "Generate PDF",
+    },
+    es: {
+      formTitle: "Formulario de Reporte de Accidente / Incidente",
+      langLabel: "Idioma",
+      employeeLabel: "Nombre del Empleado",
+      accidentTypeLabel: "Tipo de Incidente / Accidente",
+      dateLabel: "Fecha del Incidente",
+      departmentLabel: "Departamento",
+      locationLabel: "Ubicación",
+      personsLabel: "Datos de la(s) persona(s) involucrada(s)",
+      eventTypeLabel: "Tipo de Evento",
+      specifyLabel: "Especificar",
+      descriptionLabel: "Descripción del Incidente / Accidente",
+      witnessLabel: "Datos del Testigo",
+      actionsLabel: "Acciones Tomadas",
+      sendBtn: "Enviar por Email",
+      pdfBtn: "Generar PDF",
+    },
+    ht: {
+      formTitle: "Fòm Rapò Aksidan / Ensidan",
+      langLabel: "Lang",
+      employeeLabel: "Non Anplwaye a",
+      accidentTypeLabel: "Kalite Ensidan / Aksidan",
+      dateLabel: "Dat Ensidan an",
+      departmentLabel: "Depatman",
+      locationLabel: "Kote",
+      personsLabel: "Done sou moun ki enplike yo",
+      eventTypeLabel: "Kalite Evènman",
+      specifyLabel: "Espesifye",
+      descriptionLabel: "Deskripsyon Ensidan / Aksidan",
+      witnessLabel: "Done Temwen",
+      actionsLabel: "Aksyon Pran",
+      sendBtn: "Voye pa Imèl",
+      pdfBtn: "Jenere PDF",
+    }
+  };
+
+  function cambiarIdioma() {
+    const lang = document.getElementById("languageSelect").value;
+    Object.keys(textos[lang]).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = textos[lang][id];
+    });
+    // Cambiar placeholders
+    document.getElementById("location").placeholder =
+      lang === "es" ? "Área exacta donde ocurrió el evento" :
+      lang === "ht" ? "Zòn egzak kote evènman an te fèt" : "Exact area where the event occurred";
+
+    document.getElementById("personas").placeholder =
+      lang === "es" ? "Nombre completo, cargo, departamento, supervisor, información de contacto" :
+      lang === "ht" ? "Non konplè, tit travay, depatman, non sipèvizè, enfòmasyon kontak" : "Full name, job title, department, supervisor's name, contact information";
+
+    document.getElementById("witness").placeholder =
+      lang === "es" ? "Nombre completo, información de contacto del testigo, declaración del testigo" :
+      lang === "ht" ? "Non konplè, enfòmasyon kontak temwen an, deklarasyon temwen an" : "Full name, witness contact information, witness statement";
+  }
 
   function mostrarSpecify() {
     const tipo = document.getElementById("tipoEvento").value;
-    const box = document.getElementById("specifyBox");
-    box.classList.toggle("hidden", tipo !== "other");
+    document.getElementById("specifyBox").classList.toggle("hidden", tipo !== "other");
   }
 
   function obtenerDatos() {
@@ -126,7 +199,6 @@
       `Description: ${data.descripcion}%0D%0A` +
       `Witness: ${data.witness}%0D%0A` +
       `Actions: ${data.acciones}`;
-
     window.location.href =
       `mailto:safety@turksheadbrewery.com?subject=${data.tipo} Report - ${data.fecha}&body=${cuerpo}`;
   }
@@ -134,7 +206,6 @@
   function generarPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
-
     const data = obtenerDatos();
 
     pdf.setFontSize(14);
@@ -148,22 +219,16 @@
     pdf.text(`Location: ${data.location}`, 20, 75);
     pdf.text(`Persons involved: ${data.personas}`, 20, 90, { maxWidth: 170 });
     pdf.text(`Event type: ${data.tipoEvento}`, 20, 120);
-    if (data.tipoEvento === "other") {
-      pdf.text(`Specify: ${data.specify}`, 20, 130);
-    }
-
+    if (data.tipoEvento === "other") pdf.text(`Specify: ${data.specify}`, 20, 130);
     pdf.text("Description:", 20, 145);
     pdf.text(data.descripcion, 20, 155, { maxWidth: 170 });
-
     pdf.text("Witness:", 20, 185);
     pdf.text(data.witness, 20, 195, { maxWidth: 170 });
-
     pdf.text("Actions Taken:", 20, 225);
     pdf.text(data.acciones, 20, 235, { maxWidth: 170 });
 
     pdf.save(`${data.tipo.toLowerCase()}_report_${data.fecha}.pdf`);
   }
-
 </script>
 
 </body>
