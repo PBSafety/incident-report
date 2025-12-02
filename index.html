@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accident / Incident Report</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
     h1 { text-align: center; }
@@ -30,14 +31,16 @@
 </select>
 
 <form id="incidentForm">
-  <label id="employeeLabel">Employee Name</label>
-  <input type="text" id="manager" required />
 
+  <!-- MOVIDO ARRIBA COMO PEDISTE -->
   <label id="accidentTypeLabel">Incident / Accident Type</label>
-  <select id="tipo" required>
+  <select id="tipo" onchange="actualizarCampos()" required>
     <option value="Incident">Incident</option>
     <option value="Accident">Accident</option>
   </select>
+
+  <label id="employeeLabel">Employee Name</label>
+  <input type="text" id="manager" required />
 
   <label id="dateLabel">Incident Date</label>
   <input type="date" id="fecha" required />
@@ -55,14 +58,16 @@
     <option value="Other">Other</option>
   </select>
 
-  <label id="locationLabel">Location</label>
-  <input type="text" id="location" placeholder="Exact area where the event occurred" />
+  <label id="locationLabel">Location of incident</label>
+  <input type="text" id="location" />
 
   <label id="personsLabel">Data of person(s) involved</label>
-  <textarea id="personas" rows="4" placeholder="Full name, job title, department, supervisor's name, contact information"></textarea>
+  <textarea id="personas" rows="4"></textarea>
 
+  <!-- TYPE OF EVENT - DINÁMICO -->
   <label id="eventTypeLabel">Type of Event</label>
   <select id="tipoEvento" onchange="mostrarSpecify()">
+    <!-- opciones por defecto (cuando es INCIDENT) -->
     <option value="" disabled selected>Select one</option>
     <option value="near miss">Near Miss</option>
     <option value="injury">Injury</option>
@@ -76,6 +81,26 @@
     <input type="text" id="specify" />
   </div>
 
+  <!-- NATURE OF INJURY (solo para ACCIDENT) -->
+  <div id="injuryNatureBox" class="hidden">
+    <label>Nature of Injury/Illness</label>
+    <select id="injuryNature">
+      <option value="" disabled selected>Select one</option>
+      <option value="Abrasion/Cut">Abrasion / Cut</option>
+      <option value="Bruise/Contusion">Bruise / Contusion</option>
+      <option value="Burn">Burn</option>
+      <option value="Fracture">Fracture</option>
+      <option value="Sprain/Strain">Sprain / Strain</option>
+      <option value="Chemical Exposure">Chemical Exposure</option>
+    </select>
+  </div>
+
+  <!-- BODY PART AFFECTED (solo para ACCIDENT) -->
+  <div id="bodyPartBox" class="hidden">
+    <label>Body Part(s) Affected</label>
+    <input type="text" id="bodyPart" placeholder="Example: right hand, lower back, left eye, etc." />
+  </div>
+
   <label id="descriptionLabel">Incident / Accident Description</label>
   <textarea id="descripcion" rows="5" required></textarea>
 
@@ -84,6 +109,12 @@
 
   <label id="actionsLabel">Actions Taken</label>
   <textarea id="acciones" rows="4"></textarea>
+
+  <!-- ROOT CAUSE ANALYSIS (solo para ACCIDENT) -->
+  <div id="rootCauseBox" class="hidden">
+    <label>Root Cause Analysis</label>
+    <textarea id="rootCause" rows="4" placeholder="Immediate causes / underlying causes"></textarea>
+  </div>
 
   <button type="button" class="btn-primary" onclick="enviarEmail()" id="sendBtn">Send by Email</button>
   <button type="button" class="btn-secondary" onclick="generarPDF()" id="pdfBtn">Generate PDF</button>
@@ -98,7 +129,7 @@
       accidentTypeLabel: "Incident / Accident Type",
       dateLabel: "Incident Date",
       departmentLabel: "Department",
-      locationLabel: "Location",
+      locationLabel: "Location of incident",
       personsLabel: "Data of person(s) involved",
       eventTypeLabel: "Type of Event",
       specifyLabel: "Specify",
@@ -106,41 +137,7 @@
       witnessLabel: "Data of Witness",
       actionsLabel: "Actions Taken",
       sendBtn: "Send by Email",
-      pdfBtn: "Generate PDF",
-    },
-    es: {
-      formTitle: "Formulario de Reporte de Accidente / Incidente",
-      langLabel: "Idioma",
-      employeeLabel: "Nombre del Empleado",
-      accidentTypeLabel: "Tipo de Incidente / Accidente",
-      dateLabel: "Fecha del Incidente",
-      departmentLabel: "Departamento",
-      locationLabel: "Ubicación",
-      personsLabel: "Datos de la(s) persona(s) involucrada(s)",
-      eventTypeLabel: "Tipo de Evento",
-      specifyLabel: "Especificar",
-      descriptionLabel: "Descripción del Incidente / Accidente",
-      witnessLabel: "Datos del Testigo",
-      actionsLabel: "Acciones Tomadas",
-      sendBtn: "Enviar por Email",
-      pdfBtn: "Generar PDF",
-    },
-    ht: {
-      formTitle: "Fòm Rapò Aksidan / Ensidan",
-      langLabel: "Lang",
-      employeeLabel: "Non Anplwaye a",
-      accidentTypeLabel: "Kalite Ensidan / Aksidan",
-      dateLabel: "Dat Ensidan an",
-      departmentLabel: "Depatman",
-      locationLabel: "Kote",
-      personsLabel: "Done sou moun ki enplike yo",
-      eventTypeLabel: "Kalite Evènman",
-      specifyLabel: "Espesifye",
-      descriptionLabel: "Deskripsyon Ensidan / Aksidan",
-      witnessLabel: "Done Temwen",
-      actionsLabel: "Aksyon Pran",
-      sendBtn: "Voye pa Imèl",
-      pdfBtn: "Jenere PDF",
+      pdfBtn: "Generate PDF"
     }
   };
 
@@ -150,18 +147,17 @@
       const el = document.getElementById(id);
       if (el) el.innerText = textos[lang][id];
     });
-    // Cambiar placeholders
+
     document.getElementById("location").placeholder =
       lang === "es" ? "Área exacta donde ocurrió el evento" :
-      lang === "ht" ? "Zòn egzak kote evènman an te fèt" : "Exact area where the event occurred";
+      lang === "ht" ? "Zòn egzak kote evènman an te fèt" :
+      "Exact area where incident occurred";
 
     document.getElementById("personas").placeholder =
-      lang === "es" ? "Nombre completo, cargo, departamento, supervisor, información de contacto" :
-      lang === "ht" ? "Non konplè, tit travay, depatman, non sipèvizè, enfòmasyon kontak" : "Full name, job title, department, supervisor's name, contact information";
+      "Full name, job title, department, supervisor, contact info";
 
     document.getElementById("witness").placeholder =
-      lang === "es" ? "Nombre completo, información de contacto del testigo, declaración del testigo" :
-      lang === "ht" ? "Non konplè, enfòmasyon kontak temwen an, deklarasyon temwen an" : "Full name, witness contact information, witness statement";
+      "Full name, witness contact information, witness statement";
   }
 
   function mostrarSpecify() {
@@ -169,69 +165,96 @@
     document.getElementById("specifyBox").classList.toggle("hidden", tipo !== "other");
   }
 
+  function actualizarCampos() {
+    const tipo = document.getElementById("tipo").value;
+
+    const tipoEvento = document.getElementById("tipoEvento");
+    const injuryNature = document.getElementById("injuryNatureBox");
+    const bodyPart = document.getElementById("bodyPartBox");
+    const rootCause = document.getElementById("rootCauseBox");
+
+    if (tipo === "Accident") {
+      tipoEvento.innerHTML = `
+        <option value="" disabled selected>Select one</option>
+        <option value="near miss">Near Miss</option>
+        <option value="first aid only">First Aid Only</option>
+        <option value="medical treatment">Medical Treatment</option>
+        <option value="lost time">Lost Time</option>
+        <option value="fatality">Fatality</option>
+      `;
+      injuryNature.classList.remove("hidden");
+      bodyPart.classList.remove("hidden");
+      rootCause.classList.remove("hidden");
+    } else {
+      tipoEvento.innerHTML = `
+        <option value="" disabled selected>Select one</option>
+        <option value="near miss">Near Miss</option>
+        <option value="injury">Injury</option>
+        <option value="property damage">Property Damage</option>
+        <option value="environmental impact">Environmental Impact</option>
+        <option value="other">Other</option>
+      `;
+      injuryNature.classList.add("hidden");
+      bodyPart.classList.add("hidden");
+      rootCause.classList.add("hidden");
+    }
+  }
+
   function obtenerDatos() {
     return {
-      manager: document.getElementById("manager").value,
-      tipo: document.getElementById("tipo").value,
-      fecha: document.getElementById("fecha").value,
-      departamento: document.getElementById("departamento").value,
-      location: document.getElementById("location").value,
-      personas: document.getElementById("personas").value,
-      tipoEvento: document.getElementById("tipoEvento").value,
-      specify: document.getElementById("specify").value,
-      descripcion: document.getElementById("descripcion").value,
-      witness: document.getElementById("witness").value,
-      acciones: document.getElementById("acciones").value
+      manager: manager.value,
+      tipo: tipo.value,
+      fecha: fecha.value,
+      departamento: departamento.value,
+      location: location.value,
+      personas: personas.value,
+      tipoEvento: tipoEvento.value,
+      specify: specify.value,
+      descripcion: descripcion.value,
+      witness: witness.value,
+      acciones: acciones.value,
+      injuryNature: injuryNature.value || "",
+      bodyPart: bodyPart.value || "",
+      rootCause: rootCause.value || ""
     };
   }
 
   function enviarEmail() {
-    const data = obtenerDatos();
-    const cuerpo =
-      `Manager: ${data.manager}%0D%0A` +
-      `Incident Type: ${data.tipo}%0D%0A` +
-      `Date: ${data.fecha}%0D%0A` +
-      `Department: ${data.departamento}%0D%0A` +
-      `Location: ${data.location}%0D%0A` +
-      `Persons involved: ${data.personas}%0D%0A` +
-      `Event type: ${data.tipoEvento}%0D%0A` +
-      `Specify: ${data.specify}%0D%0A` +
-      `Description: ${data.descripcion}%0D%0A` +
-      `Witness: ${data.witness}%0D%0A` +
-      `Actions: ${data.acciones}`;
+    const d = obtenerDatos();
+
+    let cuerpo =
+      `Employee: ${d.manager}%0D%0A` +
+      `Type: ${d.tipo}%0D%0A` +
+      `Date: ${d.fecha}%0D%0A` +
+      `Department: ${d.departamento}%0D%0A` +
+      `Location: ${d.location}%0D%0A` +
+      `Persons involved: ${d.personas}%0D%0A` +
+      `Event Type: ${d.tipoEvento}%0D%0A`;
+
+    if (d.tipo === "Accident") {
+      cuerpo +=
+        `Nature of injury: ${d.injuryNature}%0D%0A` +
+        `Body part(s): ${d.bodyPart}%0D%0A`;
+    }
+
+    cuerpo +=
+      `Description: ${d.descripcion}%0D%0A` +
+      `Witness: ${d.witness}%0D%0A` +
+      `Actions taken: ${d.acciones}%0D%0A`;
+
+    if (d.tipo === "Accident") {
+      cuerpo += `Root Cause Analysis: ${d.rootCause}`;
+    }
+
     window.location.href =
-      `mailto:safety@turksheadbeer.com?subject=${data.tipo} Report - ${data.fecha}&body=${cuerpo}`;
+      `mailto:safety@turksheadbeer.com?subject=${d.tipo} Report - ${d.fecha}&body=${cuerpo}`;
   }
 
-  function generarPDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    const data = obtenerDatos();
-
-    pdf.setFontSize(14);
-    pdf.text(`${data.tipo} Report`, 20, 20);
-
-    pdf.setFontSize(11);
-    pdf.text(`Manager: ${data.manager}`, 20, 35);
-    pdf.text(`Type: ${data.tipo}`, 20, 45);
-    pdf.text(`Date: ${data.fecha}`, 20, 55);
-    pdf.text(`Department: ${data.departamento}`, 20, 65);
-    pdf.text(`Location: ${data.location}`, 20, 75);
-    pdf.text(`Persons involved: ${data.personas}`, 20, 90, { maxWidth: 170 });
-    pdf.text(`Event type: ${data.tipoEvento}`, 20, 120);
-    if (data.tipoEvento === "other") pdf.text(`Specify: ${data.specify}`, 20, 130);
-    pdf.text("Description:", 20, 145);
-    pdf.text(data.descripcion, 20, 155, { maxWidth: 170 });
-    pdf.text("Witness:", 20, 185);
-    pdf.text(data.witness, 20, 195, { maxWidth: 170 });
-    pdf.text("Actions Taken:", 20, 225);
-    pdf.text(data.acciones, 20, 235, { maxWidth: 170 });
-
-    pdf.save(`${data.tipo.toLowerCase()}_report_${data.fecha}.pdf`);
-  }
 </script>
 
 </body>
 </html>
+
+
 
 
