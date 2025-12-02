@@ -67,7 +67,6 @@
   <!-- TYPE OF EVENT - DINÁMICO -->
   <label id="eventTypeLabel">Type of Event</label>
   <select id="tipoEvento" onchange="mostrarSpecify()">
-    <!-- opciones por defecto (cuando es INCIDENT) -->
     <option value="" disabled selected>Select one</option>
     <option value="near miss">Near Miss</option>
     <option value="injury">Injury</option>
@@ -83,7 +82,7 @@
 
   <!-- NATURE OF INJURY (solo para ACCIDENT) -->
   <div id="injuryNatureBox" class="hidden">
-    <label>Nature of Injury/Illness</label>
+    <label id="injuryNatureLabel">Nature of Injury/Illness</label>
     <select id="injuryNature">
       <option value="" disabled selected>Select one</option>
       <option value="Abrasion/Cut">Abrasion / Cut</option>
@@ -97,7 +96,7 @@
 
   <!-- BODY PART AFFECTED (solo para ACCIDENT) -->
   <div id="bodyPartBox" class="hidden">
-    <label>Body Part(s) Affected</label>
+    <label id="bodyPartLabel">Body Part(s) Affected</label>
     <input type="text" id="bodyPart" placeholder="Example: right hand, lower back, left eye, etc." />
   </div>
 
@@ -112,7 +111,7 @@
 
   <!-- ROOT CAUSE ANALYSIS (solo para ACCIDENT) -->
   <div id="rootCauseBox" class="hidden">
-    <label>Root Cause Analysis</label>
+    <label id="rootCauseLabel">Root Cause Analysis</label>
     <textarea id="rootCause" rows="4" placeholder="Immediate causes / underlying causes"></textarea>
   </div>
 
@@ -137,27 +136,231 @@
       witnessLabel: "Data of Witness",
       actionsLabel: "Actions Taken",
       sendBtn: "Send by Email",
-      pdfBtn: "Generate PDF"
+      pdfBtn: "Generate PDF",
+      departamentoOptions: [
+        "Select department","Water dep","Spirits dep","Brewery","Packaging","Maintenance","Tap Room","Quality","Other"
+      ],
+      tipoOptionsIncident: [
+        ["","Select one"],
+        ["near miss","Near Miss"],
+        ["injury","Injury"],
+        ["property damage","Property Damage"],
+        ["environmental impact","Environmental Impact"],
+        ["other","Other"]
+      ],
+      tipoOptionsAccident: [
+        ["","Select one"],
+        ["near miss","Near Miss"],
+        ["first aid only","First Aid Only"],
+        ["medical treatment","Medical Treatment"],
+        ["lost time","Lost Time"],
+        ["fatality","Fatality"]
+      ],
+      injuryNatureOptions: [
+        ["","Select one"],
+        ["Abrasion/Cut","Abrasion / Cut"],
+        ["Bruise/Contusion","Bruise / Contusion"],
+        ["Burn","Burn"],
+        ["Fracture","Fracture"],
+        ["Sprain/Strain","Sprain / Strain"],
+        ["Chemical Exposure","Chemical Exposure"]
+      ],
+      placeholders: {
+        location: "Exact area where incident occurred",
+        personas: "Full name, job title, department, supervisor, contact info",
+        witness: "Full name, witness contact information, witness statement",
+        bodyPart: "Example: right hand, lower back, left eye, etc.",
+        rootCause: "Immediate causes / underlying causes"
+      }
+    },
+    es: {
+      formTitle: "Formulario de Reporte de Accidente / Incidente",
+      langLabel: "Idioma",
+      employeeLabel: "Nombre del Empleado",
+      accidentTypeLabel: "Tipo de Incidente / Accidente",
+      dateLabel: "Fecha del Incidente",
+      departmentLabel: "Departamento",
+      locationLabel: "Ubicación del incidente",
+      personsLabel: "Datos de la(s) persona(s) involucrada(s)",
+      eventTypeLabel: "Tipo de Evento",
+      specifyLabel: "Especificar",
+      descriptionLabel: "Descripción del Incidente / Accidente",
+      witnessLabel: "Datos del Testigo",
+      actionsLabel: "Acciones Tomadas",
+      sendBtn: "Enviar por Email",
+      pdfBtn: "Generar PDF",
+      departamentoOptions: [
+        "Seleccionar departamento","Departamento de Agua","Departamento de Licores","Cervecería","Empaque","Mantenimiento","Tap Room","Calidad","Otro"
+      ],
+      tipoOptionsIncident: [
+        ["","Seleccionar"],
+        ["near miss","Near Miss"],
+        ["injury","Lesión"],
+        ["property damage","Daño a la propiedad"],
+        ["environmental impact","Impacto ambiental"],
+        ["other","Otro"]
+      ],
+      tipoOptionsAccident: [
+        ["","Seleccionar"],
+        ["near miss","Near Miss"],
+        ["first aid only","Solo Primeros Auxilios"],
+        ["medical treatment","Tratamiento Médico"],
+        ["lost time","Días Perdidos"],
+        ["fatality","Fatalidad"]
+      ],
+      injuryNatureOptions: [
+        ["","Seleccionar"],
+        ["Abrasion/Cut","Abrasión / Corte"],
+        ["Bruise/Contusion","Moretón / Contusión"],
+        ["Burn","Quemadura"],
+        ["Fracture","Fractura"],
+        ["Sprain/Strain","Esguince / Distensión"],
+        ["Chemical Exposure","Exposición Química"]
+      ],
+      placeholders: {
+        location: "Área exacta donde ocurrió el evento",
+        personas: "Nombre completo, cargo, departamento, supervisor, información de contacto",
+        witness: "Nombre completo, información de contacto del testigo, declaración del testigo",
+        bodyPart: "Ejemplo: mano derecha, parte baja de la espalda, ojo izquierdo, etc.",
+        rootCause: "Causas inmediatas / causas subyacentes"
+      }
+    },
+    ht: {
+      formTitle: "Fòm Rapò Aksidan / Ensidan",
+      langLabel: "Lang",
+      employeeLabel: "Non Anplwaye a",
+      accidentTypeLabel: "Kalite Ensidan / Aksidan",
+      dateLabel: "Dat Ensidan an",
+      departmentLabel: "Depatman",
+      locationLabel: "Kote Ensidan an",
+      personsLabel: "Done sou moun ki enplike yo",
+      eventTypeLabel: "Kalite Evènman",
+      specifyLabel: "Espesifye",
+      descriptionLabel: "Deskripsyon Ensidan / Aksidan",
+      witnessLabel: "Done Temwen",
+      actionsLabel: "Aksyon Pran",
+      sendBtn: "Voye pa Imèl",
+      pdfBtn: "Jenere PDF",
+      departamentoOptions: [
+        "Chwazi depatman","Depatman Dlo","Depatman Bwason Spiritye","Briwri","Anbalaj","Antretyen","Tap Room","Kalite","Lòt"
+      ],
+      tipoOptionsIncident: [
+        ["","Chwazi"],
+        ["near miss","Near Miss"],
+        ["injury","Blesi"],
+        ["property damage","Domaj Pwopriyete"],
+        ["environmental impact","Enpak anviwònman"],
+        ["other","Lòt"]
+      ],
+      tipoOptionsAccident: [
+        ["","Chwazi"],
+        ["near miss","Near Miss"],
+        ["first aid only","Sèlman Premye Swen"],
+        ["medical treatment","Tretman Medikal"],
+        ["lost time","Tan pèdi"],
+        ["fatality","Lan mòt"]
+      ],
+      injuryNatureOptions: [
+        ["","Chwazi"],
+        ["Abrasion/Cut","Rale / Koupe"],
+        ["Bruise/Contusion","Blesi / Kontizyon"],
+        ["Burn","Boule"],
+        ["Fracture","Frakti"],
+        ["Sprain/Strain","Estenn / Tensyon"],
+        ["Chemical Exposure","Ekspozisyon Chimik"]
+      ],
+      placeholders: {
+        location: "Zòn egzak kote evènman an te fèt",
+        personas: "Non konplè, tit travay, depatman, non sipèvizè, enfòmasyon kontak",
+        witness: "Non konplè, enfòmasyon kontak temwen an, deklarasyon temwen an",
+        bodyPart: "Egzanp: men dwat, bas anba, je gòch, elatriye",
+        rootCause: "Kòz imedya / kòz sousyab"
+      }
     }
   };
 
   function cambiarIdioma() {
     const lang = document.getElementById("languageSelect").value;
-    Object.keys(textos[lang]).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.innerText = textos[lang][id];
+    const t = textos[lang] || textos.en;
+
+    // textos básicos
+    document.getElementById("formTitle").innerText = t.formTitle;
+    document.getElementById("langLabel").innerText = t.langLabel;
+    document.getElementById("employeeLabel").innerText = t.employeeLabel;
+    document.getElementById("accidentTypeLabel").innerText = t.accidentTypeLabel;
+    document.getElementById("dateLabel").innerText = t.dateLabel;
+    document.getElementById("departmentLabel").innerText = t.departmentLabel;
+    document.getElementById("locationLabel").innerText = t.locationLabel;
+    document.getElementById("personsLabel").innerText = t.personsLabel;
+    document.getElementById("eventTypeLabel").innerText = t.eventTypeLabel;
+    document.getElementById("specifyLabel").innerText = t.specifyLabel;
+    document.getElementById("descriptionLabel").innerText = t.descriptionLabel;
+    document.getElementById("witnessLabel").innerText = t.witnessLabel;
+    document.getElementById("actionsLabel").innerText = t.actionsLabel;
+    document.getElementById("sendBtn").innerText = t.sendBtn;
+    document.getElementById("pdfBtn").innerText = t.pdfBtn;
+    document.getElementById("injuryNatureLabel").innerText = t.injuryNatureLabel || "Nature of Injury/Illness";
+    document.getElementById("bodyPartLabel").innerText = t.bodyPartLabel || "Body Part(s) Affected";
+    document.getElementById("rootCauseLabel").innerText = t.rootCauseLabel || "Root Cause Analysis";
+
+    // placeholders
+    document.getElementById("location").placeholder = t.placeholders.location;
+    document.getElementById("personas").placeholder = t.placeholders.personas;
+    document.getElementById("witness").placeholder = t.placeholders.witness;
+    document.getElementById("bodyPart").placeholder = t.placeholders.bodyPart;
+    document.getElementById("rootCause").placeholder = t.placeholders.rootCause;
+
+    // departamentos
+    const dept = document.getElementById("departamento");
+    dept.innerHTML = "";
+    t.departamentoOptions.forEach((optText, i) => {
+      const opt = document.createElement("option");
+      if (i === 0) {
+        opt.value = "";
+        opt.disabled = true;
+        opt.selected = true;
+      } else {
+        // dejamos los values en inglés cortos (puedes cambiar si querés)
+        const valuesMap = ["","Water dep","Spirits dep","Brewery","Packaging","Maintenance","Tap Room","Quality","Other"];
+        opt.value = valuesMap[i] || optText;
+      }
+      opt.innerText = optText;
+      dept.appendChild(opt);
     });
 
-    document.getElementById("location").placeholder =
-      lang === "es" ? "Área exacta donde ocurrió el evento" :
-      lang === "ht" ? "Zòn egzak kote evènman an te fèt" :
-      "Exact area where incident occurred";
+    // Actualiza opciones del select tipoEvento según tipo actual (Incident/Accident)
+    const tipoSelect = document.getElementById("tipo");
+    const tipoValue = tipoSelect.value || "Incident";
+    // si tipo es Accident, usamos la lista de accidentes traducida; si es Incident usamos la de incidentes
+    const tipoEventoSelect = document.getElementById("tipoEvento");
 
-    document.getElementById("personas").placeholder =
-      "Full name, job title, department, supervisor, contact info";
+    const tipoList = (tipoValue === "Accident") ? t.tipoOptionsAccident : t.tipoOptionsIncident;
+    tipoEventoSelect.innerHTML = "";
+    tipoList.forEach(pair => {
+      const opt = document.createElement("option");
+      opt.value = pair[0];
+      // el primer par suele ser la opción vacía (placeholder)
+      if (pair[0] === "") {
+        opt.disabled = true;
+        opt.selected = true;
+      }
+      opt.innerText = pair[1];
+      tipoEventoSelect.appendChild(opt);
+    });
 
-    document.getElementById("witness").placeholder =
-      "Full name, witness contact information, witness statement";
+    // opciones de injuryNature
+    const injurySelect = document.getElementById("injuryNature");
+    injurySelect.innerHTML = "";
+    t.injuryNatureOptions.forEach(pair => {
+      const opt = document.createElement("option");
+      opt.value = pair[0];
+      if (pair[0] === "") { opt.disabled = true; opt.selected = true; }
+      opt.innerText = pair[1];
+      injurySelect.appendChild(opt);
+    });
+
+    // Forzamos mostrar/ocultar los campos según tipo actual
+    actualizarCampos();
   }
 
   function mostrarSpecify() {
@@ -169,53 +372,60 @@
     const tipo = document.getElementById("tipo").value;
 
     const tipoEvento = document.getElementById("tipoEvento");
-    const injuryNature = document.getElementById("injuryNatureBox");
-    const bodyPart = document.getElementById("bodyPartBox");
-    const rootCause = document.getElementById("rootCauseBox");
+    const injuryNatureBox = document.getElementById("injuryNatureBox");
+    const bodyPartBox = document.getElementById("bodyPartBox");
+    const rootCauseBox = document.getElementById("rootCauseBox");
 
     if (tipo === "Accident") {
-      tipoEvento.innerHTML = `
-        <option value="" disabled selected>Select one</option>
-        <option value="near miss">Near Miss</option>
-        <option value="first aid only">First Aid Only</option>
-        <option value="medical treatment">Medical Treatment</option>
-        <option value="lost time">Lost Time</option>
-        <option value="fatality">Fatality</option>
-      `;
-      injuryNature.classList.remove("hidden");
-      bodyPart.classList.remove("hidden");
-      rootCause.classList.remove("hidden");
+      // rellenar tipoEvento con opciones de accident del idioma actual
+      const lang = document.getElementById("languageSelect").value;
+      const t = textos[lang] || textos.en;
+      tipoEvento.innerHTML = "";
+      t.tipoOptionsAccident.forEach(pair => {
+        const opt = document.createElement("option");
+        opt.value = pair[0];
+        if (pair[0] === "") { opt.disabled = true; opt.selected = true; }
+        opt.innerText = pair[1];
+        tipoEvento.appendChild(opt);
+      });
+
+      injuryNatureBox.classList.remove("hidden");
+      bodyPartBox.classList.remove("hidden");
+      rootCauseBox.classList.remove("hidden");
     } else {
-      tipoEvento.innerHTML = `
-        <option value="" disabled selected>Select one</option>
-        <option value="near miss">Near Miss</option>
-        <option value="injury">Injury</option>
-        <option value="property damage">Property Damage</option>
-        <option value="environmental impact">Environmental Impact</option>
-        <option value="other">Other</option>
-      `;
-      injuryNature.classList.add("hidden");
-      bodyPart.classList.add("hidden");
-      rootCause.classList.add("hidden");
+      const lang = document.getElementById("languageSelect").value;
+      const t = textos[lang] || textos.en;
+      tipoEvento.innerHTML = "";
+      t.tipoOptionsIncident.forEach(pair => {
+        const opt = document.createElement("option");
+        opt.value = pair[0];
+        if (pair[0] === "") { opt.disabled = true; opt.selected = true; }
+        opt.innerText = pair[1];
+        tipoEvento.appendChild(opt);
+      });
+
+      injuryNatureBox.classList.add("hidden");
+      bodyPartBox.classList.add("hidden");
+      rootCauseBox.classList.add("hidden");
     }
   }
 
   function obtenerDatos() {
     return {
-      manager: manager.value,
-      tipo: tipo.value,
-      fecha: fecha.value,
-      departamento: departamento.value,
-      location: location.value,
-      personas: personas.value,
-      tipoEvento: tipoEvento.value,
-      specify: specify.value,
-      descripcion: descripcion.value,
-      witness: witness.value,
-      acciones: acciones.value,
-      injuryNature: injuryNature.value || "",
-      bodyPart: bodyPart.value || "",
-      rootCause: rootCause.value || ""
+      manager: document.getElementById("manager").value,
+      tipo: document.getElementById("tipo").value,
+      fecha: document.getElementById("fecha").value,
+      departamento: document.getElementById("departamento").value,
+      location: document.getElementById("location").value,
+      personas: document.getElementById("personas").value,
+      tipoEvento: document.getElementById("tipoEvento").value,
+      specify: document.getElementById("specify").value,
+      descripcion: document.getElementById("descripcion").value,
+      witness: document.getElementById("witness").value,
+      acciones: document.getElementById("acciones").value,
+      injuryNature: document.getElementById("injuryNature") ? document.getElementById("injuryNature").value : "",
+      bodyPart: document.getElementById("bodyPart") ? document.getElementById("bodyPart").value : "",
+      rootCause: document.getElementById("rootCause") ? document.getElementById("rootCause").value : ""
     };
   }
 
@@ -247,13 +457,56 @@
     }
 
     window.location.href =
-      `mailto:safety@turksheadbeer.com?subject=${d.tipo} Report - ${d.fecha}&body=${cuerpo}`;
+      `mailto:safety@turksheadbeer.com?subject=${encodeURIComponent(d.tipo + " Report - " + d.fecha)}&body=${cuerpo}`;
   }
 
+  function generarPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    const data = obtenerDatos();
+
+    pdf.setFontSize(14);
+    pdf.text(`${data.tipo} Report`, 20, 20);
+
+    pdf.setFontSize(11);
+    pdf.text(`Employee: ${data.manager}`, 20, 35);
+    pdf.text(`Type: ${data.tipo}`, 20, 45);
+    pdf.text(`Date: ${data.fecha}`, 20, 55);
+    pdf.text(`Department: ${data.departamento}`, 20, 65);
+    pdf.text(`Location: ${data.location}`, 20, 75);
+    pdf.text(`Persons involved: ${data.personas}`, 20, 90, { maxWidth: 170 });
+    pdf.text(`Event type: ${data.tipoEvento}`, 20, 120);
+    if (data.tipo === "Accident") {
+      pdf.text(`Nature of injury: ${data.injuryNature}`, 20, 130);
+      pdf.text(`Body part(s): ${data.bodyPart}`, 20, 140);
+    }
+    pdf.text("Description:", 20, 155);
+    pdf.text(data.descripcion, 20, 165, { maxWidth: 170 });
+    pdf.text("Witness:", 20, 200);
+    pdf.text(data.witness, 20, 210, { maxWidth: 170 });
+    pdf.text("Actions Taken:", 20, 240);
+    pdf.text(data.acciones, 20, 250, { maxWidth: 170 });
+    if (data.tipo === "Accident") {
+      pdf.text("Root Cause Analysis:", 20, 280);
+      pdf.text(data.rootCause, 20, 290, { maxWidth: 170 });
+    }
+
+    pdf.save(`${(data.tipo || "report").toLowerCase()}_report_${data.fecha || "no-date"}.pdf`);
+  }
+
+  // inicializa idioma al cargar
+  document.addEventListener("DOMContentLoaded", () => {
+    // si el selector tiene un valor (por ej. navegador lo predetermina), respetamos; sino dejamos 'en'
+    const sel = document.getElementById("languageSelect");
+    if (!sel.value) sel.value = "en";
+    cambiarIdioma();
+  });
 </script>
 
 </body>
 </html>
+
+
 
 
 
